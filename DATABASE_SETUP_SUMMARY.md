@@ -5,7 +5,7 @@
 ### 1. Database Schema Created
 - **Database**: `railway` (Railway MySQL)
 - **Tables Created**: 6 tables
-  - `roles` - User roles (admin, guru, wali_murid)
+  - `roles` - User roles (admin, guru, _murid)
   - `users` - User accounts with authentication
   - `anak` - Child/Student data
   - `perkembangan_fisik` - Physical development tracking
@@ -27,7 +27,7 @@
 ### 4. Test Data Inserted
 - Admin user created (username: `admin`)
 - Guru user created (username: `guru1`)
-- Wali user created (username: `wali1`)
+-  user created (username: `wali1`)
 - Test child/student created (nama: `Ahmad Rizki`)
 
 ## 🔐 Default Test Credentials

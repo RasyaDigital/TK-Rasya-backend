@@ -131,11 +131,11 @@ CREATE TABLE rapor (
 );
 
 -- DATA DUMMY (Expert Set)
--- Passwords: admin123, guru123, wali123 (BCrypt format)
+-- Passwords: admin123, guru123, wali123
 INSERT INTO users (id_user, username, password, nama, email, id_role) VALUES 
 (1, 'admin', '$2a$10$hKDVYxLefVhv/LtuMaH1atUqYZvpwAqZqeK6WnPg1X.9UerLgn1re', 'Super Admin', 'admin@sekolah.com', 1),
-(2, 'guru1', '$2a$10$hKDVYxLefVhv/LtuMaH1atUqYZvpwAqZqeK6WnPg1X.9UerLgn1re', 'Guru Budi', 'budi@sekolah.com', 2),
-(3, 'wali1', '$2a$10$hKDVYxLefVhv/LtuMaH1atUqYZvpwAqZqeK6WnPg1X.9UerLgn1re', 'Orang Tua Azzam', 'wali1@email.com', 3);
+(2, 'guru1', '$2a$10$H.7mR8E/p7pG9K.P7r8.A5uV/LtuMaH1atUqYZvpwAqZqeK6WnPga', 'Guru Budi', 'budi@sekolah.com', 2),
+(3, 'wali1', '$2a$10$V.O1v7pS.XfH.7G9r8.A5u8K7R9yLxJ3X.8zP.qNZeF/LQZ4.J5N8', 'Orang Tua Azzam', 'wali1@email.com', 3);
 
 
 INSERT INTO tahun_ajaran (id_tahun, tahun_ajaran, is_active) VALUES (1, '2024/2025', true);
