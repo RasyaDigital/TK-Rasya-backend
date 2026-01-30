@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .exceptionHandling(exceptionHandling -> exceptionHandling.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/auth/**", "/health/**", "/").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
