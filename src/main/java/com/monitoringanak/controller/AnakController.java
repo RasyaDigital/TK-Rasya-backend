@@ -3,12 +3,18 @@ package com.monitoringanak.controller;
 import com.monitoringanak.model.Anak;
 import com.monitoringanak.dto.ApiResponse;
 import com.monitoringanak.service.AnakService;
+import com.monitoringanak.service.SemesterService;
+import com.monitoringanak.service.PendaftaranKelasService;
 import com.monitoringanak.security.RoleValidator;
+import com.monitoringanak.model.Semester;
+import com.monitoringanak.model.PendaftaranKelas;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/anak")
@@ -16,199 +22,215 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class AnakController {
 
-    private final AnakService anakService;
-    private final RoleValidator roleValidator;
+        private final AnakService anakService;
+        private final SemesterService semesterService;
+        private final PendaftaranKelasService pendaftaranKelasService;
+        private final RoleValidator roleValidator;
 
-    /**
-     * Get all anak (filtered by role)
-     * - Admin/Guru: Get all children
-     * - Wali: Get only their children
-     */
-    @GetMapping
-    public ResponseEntity<?> getAllAnak(HttpServletRequest request) {
-        try {
-            Integer userId = (Integer) request.getAttribute("userId");
-            String userRole = (String) request.getAttribute("userRole");
+        /**
+         * Get all anak (filtered by role)
+         * - Admin/Guru: Get all children
+         * - Wali: Get only their children
+         */
+        @GetMapping
+        public ResponseEntity<?> getAllAnak(HttpServletRequest request) {
+                try {
+                        Integer userId = (Integer) request.getAttribute("userId");
+                        String userRole = (String) request.getAttribute("userRole");
 
-            List<Anak> list;
+                        List<Anak> list;
 
-            // Admin and Guru get all children
-            if (roleValidator.hasFullAccess(userRole)) {
-                list = anakService.getAllAnak();
-            }
-            // Wali only gets their own children
-            else if (roleValidator.isWali(userRole)) {
-                list = anakService.getAnakByWali(userId);
-            } else {
-                return ResponseEntity.status(403).body(
-                        ApiResponse.builder()
-                                .success(false)
-                                .message("Unauthorized access")
-                                .code(403)
-                                .build());
-            }
+                        // Admin gets all children
+                        if (roleValidator.isAdmin(userRole)) { // Changed from hasFullAccess to isAdmin based on context
+                                list = anakService.getAllAnak();
+                        }
+                        // For now, Guru can see all (Expert lookup will be implemented in
+                        // PendaftaranKelasService)
+                        else if (roleValidator.isGuru(userRole)) {
+                                // EXPERT LOOKUP: Get active semester first
+                                Semester activeSemester = semesterService.getActive();
+                                if (activeSemester != null) {
+                                        list = pendaftaranKelasService.getByGuru(userId, activeSemester.getIdSemester())
+                                                        .stream()
+                                                        .map(p -> p.getAnak())
+                                                        .collect(Collectors.toList());
+                                } else {
+                                        list = new ArrayList<>();
+                                }
+                        }
+                        // Wali only gets their own children
+                        else if (roleValidator.isWali(userRole)) {
+                                list = anakService.getAnakByWali(userId);
+                        } else {
+                                return ResponseEntity.status(403).body(
+                                                ApiResponse.builder()
+                                                                .success(false)
+                                                                .message("Unauthorized access")
+                                                                .code(403)
+                                                                .build());
+                        }
 
-            return ResponseEntity.ok(
-                    ApiResponse.builder()
-                            .success(true)
-                            .message("Data anak retrieved successfully")
-                            .data(list)
-                            .code(200)
-                            .build());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(
-                    ApiResponse.builder()
-                            .success(false)
-                            .message(e.getMessage())
-                            .code(400)
-                            .build());
+                        return ResponseEntity.ok(
+                                        ApiResponse.builder()
+                                                        .success(true)
+                                                        .message("Data anak retrieved successfully")
+                                                        .data(list)
+                                                        .code(200)
+                                                        .build());
+                } catch (Exception e) {
+                        return ResponseEntity.badRequest().body(
+                                        ApiResponse.builder()
+                                                        .success(false)
+                                                        .message(e.getMessage())
+                                                        .code(400)
+                                                        .build());
+                }
         }
-    }
 
-    /**
-     * Get anak by ID (with role validation)
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getAnakById(@PathVariable Integer id, HttpServletRequest request) {
-        try {
-            Integer userId = (Integer) request.getAttribute("userId");
-            String userRole = (String) request.getAttribute("userRole");
+        /**
+         * Get anak by ID (with role validation)
+         */
+        @GetMapping("/{id}")
+        public ResponseEntity<?> getAnakById(@PathVariable Integer id, HttpServletRequest request) {
+                try {
+                        Integer userId = (Integer) request.getAttribute("userId");
+                        String userRole = (String) request.getAttribute("userRole");
 
-            // Validate access
-            if (!roleValidator.userHasAccessToAnak(userId, userRole, id)) {
-                return ResponseEntity.status(403).body(
-                        ApiResponse.builder()
-                                .success(false)
-                                .message("You don't have permission to access this child's data")
-                                .code(403)
-                                .build());
-            }
+                        // Validate access
+                        if (!roleValidator.userHasAccessToAnak(userId, userRole, id)) {
+                                return ResponseEntity.status(403).body(
+                                                ApiResponse.builder()
+                                                                .success(false)
+                                                                .message("You don't have permission to access this child's data")
+                                                                .code(403)
+                                                                .build());
+                        }
 
-            Anak anak = anakService.getAnakById(id)
-                    .orElseThrow(() -> new RuntimeException("Anak not found"));
+                        Anak anak = anakService.getAnakById(id)
+                                        .orElseThrow(() -> new RuntimeException("Anak not found"));
 
-            return ResponseEntity.ok(
-                    ApiResponse.builder()
-                            .success(true)
-                            .message("Anak retrieved successfully")
-                            .data(anak)
-                            .code(200)
-                            .build());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(
-                    ApiResponse.builder()
-                            .success(false)
-                            .message(e.getMessage())
-                            .code(400)
-                            .build());
+                        return ResponseEntity.ok(
+                                        ApiResponse.builder()
+                                                        .success(true)
+                                                        .message("Anak retrieved successfully")
+                                                        .data(anak)
+                                                        .code(200)
+                                                        .build());
+                } catch (Exception e) {
+                        return ResponseEntity.badRequest().body(
+                                        ApiResponse.builder()
+                                                        .success(false)
+                                                        .message(e.getMessage())
+                                                        .code(400)
+                                                        .build());
+                }
         }
-    }
 
-    /**
-     * Add/Create anak (Admin and Guru only)
-     */
-    @PostMapping
-    public ResponseEntity<?> tambahAnak(@RequestBody Anak anak, HttpServletRequest request) {
-        try {
-            String userRole = (String) request.getAttribute("userRole");
+        /**
+         * Add/Create anak (Admin and Guru only)
+         */
+        @PostMapping
+        public ResponseEntity<?> tambahAnak(@RequestBody Anak anak, HttpServletRequest request) {
+                try {
+                        String userRole = (String) request.getAttribute("userRole");
 
-            // Only Admin and Guru can create children
-            if (!roleValidator.hasFullAccess(userRole)) {
-                return ResponseEntity.status(403).body(
-                        ApiResponse.builder()
-                                .success(false)
-                                .message("Only admin and guru can create student records")
-                                .code(403)
-                                .build());
-            }
+                        // Only Admin and Guru can create children
+                        if (!roleValidator.hasFullAccess(userRole)) {
+                                return ResponseEntity.status(403).body(
+                                                ApiResponse.builder()
+                                                                .success(false)
+                                                                .message("Only admin and guru can create student records")
+                                                                .code(403)
+                                                                .build());
+                        }
 
-            Anak created = anakService.tambahAnak(anak);
-            return ResponseEntity.ok(
-                    ApiResponse.builder()
-                            .success(true)
-                            .message("Anak created successfully")
-                            .data(created)
-                            .code(200)
-                            .build());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(
-                    ApiResponse.builder()
-                            .success(false)
-                            .message(e.getMessage())
-                            .code(400)
-                            .build());
+                        Anak created = anakService.tambahAnak(anak);
+                        return ResponseEntity.ok(
+                                        ApiResponse.builder()
+                                                        .success(true)
+                                                        .message("Anak created successfully")
+                                                        .data(created)
+                                                        .code(200)
+                                                        .build());
+                } catch (Exception e) {
+                        return ResponseEntity.badRequest().body(
+                                        ApiResponse.builder()
+                                                        .success(false)
+                                                        .message(e.getMessage())
+                                                        .code(400)
+                                                        .build());
+                }
         }
-    }
 
-    /**
-     * Update anak (Admin and Guru only)
-     */
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateAnak(@PathVariable Integer id, @RequestBody Anak details,
-            HttpServletRequest request) {
-        try {
-            String userRole = (String) request.getAttribute("userRole");
+        /**
+         * Update anak (Admin and Guru only)
+         */
+        @PutMapping("/{id}")
+        public ResponseEntity<?> updateAnak(@PathVariable Integer id, @RequestBody Anak details,
+                        HttpServletRequest request) {
+                try {
+                        String userRole = (String) request.getAttribute("userRole");
 
-            // Only Admin and Guru can update children
-            if (!roleValidator.hasFullAccess(userRole)) {
-                return ResponseEntity.status(403).body(
-                        ApiResponse.builder()
-                                .success(false)
-                                .message("Only admin and guru can update student records")
-                                .code(403)
-                                .build());
-            }
+                        // Only Admin and Guru can update children
+                        if (!roleValidator.hasFullAccess(userRole)) {
+                                return ResponseEntity.status(403).body(
+                                                ApiResponse.builder()
+                                                                .success(false)
+                                                                .message("Only admin and guru can update student records")
+                                                                .code(403)
+                                                                .build());
+                        }
 
-            Anak updated = anakService.updateAnak(id, details);
-            return ResponseEntity.ok(
-                    ApiResponse.builder()
-                            .success(true)
-                            .message("Anak updated successfully")
-                            .data(updated)
-                            .code(200)
-                            .build());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(
-                    ApiResponse.builder()
-                            .success(false)
-                            .message(e.getMessage())
-                            .code(400)
-                            .build());
+                        Anak updated = anakService.updateAnak(id, details);
+                        return ResponseEntity.ok(
+                                        ApiResponse.builder()
+                                                        .success(true)
+                                                        .message("Anak updated successfully")
+                                                        .data(updated)
+                                                        .code(200)
+                                                        .build());
+                } catch (Exception e) {
+                        return ResponseEntity.badRequest().body(
+                                        ApiResponse.builder()
+                                                        .success(false)
+                                                        .message(e.getMessage())
+                                                        .code(400)
+                                                        .build());
+                }
         }
-    }
 
-    /**
-     * Delete anak (Admin and Guru only)
-     */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteAnak(@PathVariable Integer id, HttpServletRequest request) {
-        try {
-            String userRole = (String) request.getAttribute("userRole");
+        /**
+         * Delete anak (Admin and Guru only)
+         */
+        @DeleteMapping("/{id}")
+        public ResponseEntity<?> deleteAnak(@PathVariable Integer id, HttpServletRequest request) {
+                try {
+                        String userRole = (String) request.getAttribute("userRole");
 
-            // Only Admin and Guru can delete children
-            if (!roleValidator.hasFullAccess(userRole)) {
-                return ResponseEntity.status(403).body(
-                        ApiResponse.builder()
-                                .success(false)
-                                .message("Only admin and guru can delete student records")
-                                .code(403)
-                                .build());
-            }
+                        // Only Admin and Guru can delete children
+                        if (!roleValidator.hasFullAccess(userRole)) {
+                                return ResponseEntity.status(403).body(
+                                                ApiResponse.builder()
+                                                                .success(false)
+                                                                .message("Only admin and guru can delete student records")
+                                                                .code(403)
+                                                                .build());
+                        }
 
-            anakService.deleteAnak(id);
-            return ResponseEntity.ok(
-                    ApiResponse.builder()
-                            .success(true)
-                            .message("Anak deleted successfully")
-                            .code(200)
-                            .build());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(
-                    ApiResponse.builder()
-                            .success(false)
-                            .message(e.getMessage())
-                            .code(400)
-                            .build());
+                        anakService.deleteAnak(id);
+                        return ResponseEntity.ok(
+                                        ApiResponse.builder()
+                                                        .success(true)
+                                                        .message("Anak deleted successfully")
+                                                        .code(200)
+                                                        .build());
+                } catch (Exception e) {
+                        return ResponseEntity.badRequest().body(
+                                        ApiResponse.builder()
+                                                        .success(false)
+                                                        .message(e.getMessage())
+                                                        .code(400)
+                                                        .build());
+                }
         }
-    }
 }

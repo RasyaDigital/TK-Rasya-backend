@@ -1,5 +1,9 @@
 # README - Monitoring Anak Backend
 
+> [!NOTE]
+> **Status Deployment:** 🚀 Live on Railway
+> **Production API:** `https://web-production-c31b7.up.railway.app/api`
+
 Backend API untuk Sistem Monitoring Perkembangan Anak (TK/PAUD)
 
 ## 📋 Teknologi yang Digunakan
@@ -77,7 +81,10 @@ mvn spring-boot:run
 
 Server akan berjalan di: `http://localhost:8080/api`
 
-## 📡 API Endpoints
+## 📡 API Reference
+
+Untuk detail lengkap setiap endpoint, parameter, dan contoh response, silakan buka:
+### 📖 [PUBLIC_API_REFERENCE.md](file:///c:/Users/akip/Desktop/TK-Rasya-backend/PUBLIC_API_REFERENCE.md)
 
 ### Authentication
 

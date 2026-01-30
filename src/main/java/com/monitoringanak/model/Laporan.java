@@ -21,6 +21,10 @@ public class Laporan {
     @JoinColumn(name = "id_anak", nullable = false)
     private Anak anak;
 
+    @ManyToOne
+    @JoinColumn(name = "id_semester", nullable = false)
+    private Semester semester;
+
     @Column(length = 50)
     private String periode;
 

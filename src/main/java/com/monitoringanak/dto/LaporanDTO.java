@@ -11,6 +11,7 @@ public class LaporanDTO {
     private Integer idLaporan;
     private Integer idAnak;
     private String namaAnak;
+    private Integer idSemester;
     private String periode;
     private String filePdf;
     private Integer idGuru;

@@ -11,6 +11,8 @@ public class PerkembanganAspekDTO {
     private Integer idAspek;
     private Integer idAnak;
     private LocalDate tanggal;
+    private Integer idSemester;
+    private Integer bulan;
     private Integer agamaMoral;
     private Integer fisikMotorik;
     private Integer kognitif;

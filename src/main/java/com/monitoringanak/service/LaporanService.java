@@ -69,8 +69,14 @@ public class LaporanService {
         if (details.getPeriode() != null) {
             laporan.setPeriode(details.getPeriode());
         }
+        if (details.getSemester() != null) {
+            laporan.setSemester(details.getSemester());
+        }
         if (details.getFilePdf() != null) {
             laporan.setFilePdf(details.getFilePdf());
+        }
+        if (details.getDibuatOleh() != null) {
+            laporan.setDibuatOleh(details.getDibuatOleh());
         }
 
         return laporanRepository.save(laporan);

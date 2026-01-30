@@ -39,22 +39,12 @@ public class AnakService {
     }
 
     /**
-     * Get all anak by guru
-     */
-    public List<Anak> getAnakByGuru(Integer idGuru) {
-        return anakRepository.findByGuru_IdUser(idGuru);
-    }
-
-    /**
      * Get all anak by wali murid
      */
     public List<Anak> getAnakByWali(Integer idWali) {
         return anakRepository.findByWali_IdUser(idWali);
     }
 
-    /**
-     * Update anak
-     */
     public Anak updateAnak(Integer idAnak, Anak anakDetails) {
         Anak anak = anakRepository.findById(idAnak)
                 .orElseThrow(() -> new RuntimeException("Anak not found!"));
@@ -68,11 +58,6 @@ public class AnakService {
         if (anakDetails.getJenisKelamin() != null) {
             anak.setJenisKelamin(anakDetails.getJenisKelamin());
         }
-        if (anakDetails.getGuru() != null) {
-            User guru = userRepository.findById(anakDetails.getGuru().getIdUser())
-                    .orElseThrow(() -> new RuntimeException("Guru not found!"));
-            anak.setGuru(guru);
-        }
         if (anakDetails.getWali() != null) {
             User wali = userRepository.findById(anakDetails.getWali().getIdUser())
                     .orElseThrow(() -> new RuntimeException("Wali not found!"));
@@ -82,9 +67,6 @@ public class AnakService {
         return anakRepository.save(anak);
     }
 
-    /**
-     * Delete anak
-     */
     public void deleteAnak(Integer idAnak) {
         anakRepository.deleteById(idAnak);
     }

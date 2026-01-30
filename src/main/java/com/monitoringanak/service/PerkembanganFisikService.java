@@ -54,6 +54,12 @@ public class PerkembanganFisikService {
         if (details.getTanggal() != null) {
             perkembangan.setTanggal(details.getTanggal());
         }
+        if (details.getSemester() != null) {
+            perkembangan.setSemester(details.getSemester());
+        }
+        if (details.getBulan() != null) {
+            perkembangan.setBulan(details.getBulan());
+        }
         if (details.getTinggiBadan() != null) {
             perkembangan.setTinggiBadan(details.getTinggiBadan());
         }

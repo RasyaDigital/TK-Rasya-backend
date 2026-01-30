@@ -25,6 +25,13 @@ public class PerkembanganAspek {
     @Column(nullable = false)
     private LocalDate tanggal;
 
+    @ManyToOne
+    @JoinColumn(name = "id_semester", nullable = false)
+    private Semester semester;
+
+    @Column(nullable = false)
+    private Integer bulan; // 1-6 within semester
+
     @Column(name = "agama_moral")
     private Integer agamaMoral;
 

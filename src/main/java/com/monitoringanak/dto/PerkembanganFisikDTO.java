@@ -11,6 +11,8 @@ public class PerkembanganFisikDTO {
     private Integer idFisik;
     private Integer idAnak;
     private LocalDate tanggal;
+    private Integer idSemester;
+    private Integer bulan;
     private Float tinggiBadan;
     private Float beratBadan;
     private Float lingkarKepala;

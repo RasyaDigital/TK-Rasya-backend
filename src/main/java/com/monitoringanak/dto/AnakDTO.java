@@ -12,8 +12,6 @@ public class AnakDTO {
     private String namaAnak;
     private LocalDate tglLahir;
     private String jenisKelamin;
-    private Integer idGuru;
-    private String namaGuru;
     private Integer idWali;
     private String namaWali;
 }

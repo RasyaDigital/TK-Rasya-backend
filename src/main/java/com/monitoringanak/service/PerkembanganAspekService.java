@@ -54,6 +54,12 @@ public class PerkembanganAspekService {
         if (details.getTanggal() != null) {
             perkembangan.setTanggal(details.getTanggal());
         }
+        if (details.getSemester() != null) {
+            perkembangan.setSemester(details.getSemester());
+        }
+        if (details.getBulan() != null) {
+            perkembangan.setBulan(details.getBulan());
+        }
         if (details.getAgamaMoral() != null) {
             perkembangan.setAgamaMoral(details.getAgamaMoral());
         }
