@@ -22,4 +22,31 @@ public class PendaftaranKelasService {
     public List<PendaftaranKelas> getByGuru(Integer idGuru, Integer idSemester) {
         return pendaftaranKelasRepository.findByGuru_IdUserAndSemester_IdSemester(idGuru, idSemester);
     }
+
+    public PendaftaranKelas update(Integer id, PendaftaranKelas details) {
+        PendaftaranKelas existing = pendaftaranKelasRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pendaftaran not found"));
+
+        if (details.getKelas() != null) {
+            existing.setKelas(details.getKelas());
+        }
+
+        if (details.getGuru() != null) {
+            existing.setGuru(details.getGuru());
+        }
+
+        if (details.getSemester() != null) {
+            existing.setSemester(details.getSemester());
+        }
+
+        if (details.getAnak() != null) {
+            existing.setAnak(details.getAnak());
+        }
+
+        return pendaftaranKelasRepository.save(existing);
+    }
+
+    public void delete(Integer id) {
+        pendaftaranKelasRepository.deleteById(id);
+    }
 }

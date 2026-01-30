@@ -87,15 +87,39 @@ public class UserService {
     /**
      * Update user
      */
-    public User updateUser(Integer idUser, String nama, String email) {
+    /**
+     * Update user (comprehensive)
+     */
+    public User updateUser(Integer idUser, String username, String password, String nama, String email,
+            Integer idRole) {
         User user = userRepository.findById(idUser)
                 .orElseThrow(() -> new RuntimeException("User not found!"));
+
+        // Update Username (check uniqueness)
+        if (username != null && !username.isEmpty() && !username.equals(user.getUsername())) {
+            if (userRepository.findByUsername(username).isPresent()) {
+                throw new RuntimeException("Username already exists!");
+            }
+            user.setUsername(username);
+        }
+
+        // Update Password (if provided)
+        if (password != null && !password.isEmpty()) {
+            user.setPassword(passwordEncoder.encode(password));
+        }
 
         if (nama != null && !nama.isEmpty()) {
             user.setNama(nama);
         }
         if (email != null && !email.isEmpty()) {
             user.setEmail(email);
+        }
+
+        // Update Role (if provided)
+        if (idRole != null) {
+            Role role = roleRepository.findById(idRole)
+                    .orElseThrow(() -> new RuntimeException("Role not found!"));
+            user.setRole(role);
         }
 
         return userRepository.save(user);

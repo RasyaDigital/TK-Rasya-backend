@@ -32,4 +32,26 @@ public class TahunAjaranService {
     public TahunAjaran getActive() {
         return tahunAjaranRepository.findByIsActiveTrue().orElse(null);
     }
+
+    public TahunAjaran update(Integer id, TahunAjaran details) {
+        TahunAjaran existing = tahunAjaranRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tahun Ajaran not found"));
+
+        if (details.getTahunAjaran() != null) {
+            existing.setTahunAjaran(details.getTahunAjaran());
+        }
+
+        if (details.getIsActive() != null) {
+            if (details.getIsActive()) {
+                deactivateAll();
+            }
+            existing.setIsActive(details.getIsActive());
+        }
+
+        return tahunAjaranRepository.save(existing);
+    }
+
+    public void delete(Integer id) {
+        tahunAjaranRepository.deleteById(id);
+    }
 }
