@@ -1,6 +1,8 @@
 package com.monitoringanak.controller;
 
 import com.monitoringanak.model.PerkembanganAspek;
+import com.monitoringanak.model.Anak;
+import com.monitoringanak.model.Semester;
 import com.monitoringanak.dto.ApiResponse;
 import com.monitoringanak.service.PerkembanganAspekService;
 import com.monitoringanak.security.RoleValidator;
@@ -155,8 +157,8 @@ public class PerkembanganAspekController {
                         }
 
                         PerkembanganAspek entity = new PerkembanganAspek();
-                        entity.setAnak(com.monitoringanak.model.Anak.builder().idAnak(dto.getIdAnak()).build());
-                        entity.setSemester(com.monitoringanak.model.Semester.builder().idSemester(dto.getIdSemester())
+                        entity.setAnak(Anak.builder().idAnak(dto.getIdAnak()).build());
+                        entity.setSemester(Semester.builder().idSemester(dto.getIdSemester())
                                         .build());
                         entity.setBulan(dto.getBulan());
                         entity.setTanggal(dto.getTanggal());
