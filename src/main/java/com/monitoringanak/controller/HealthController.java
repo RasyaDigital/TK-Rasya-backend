@@ -14,6 +14,15 @@ public class HealthController {
     public ResponseEntity<?> health() {
         return ResponseEntity.ok(ApiResponse.builder()
                 .success(true)
+                .message("OK")
+                .code(200)
+                .build());
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<?> check() {
+        return ResponseEntity.ok(ApiResponse.builder()
+                .success(true)
                 .message("System is operational")
                 .code(200)
                 .build());
