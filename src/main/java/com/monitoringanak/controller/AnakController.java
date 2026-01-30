@@ -7,7 +7,6 @@ import com.monitoringanak.service.SemesterService;
 import com.monitoringanak.service.PendaftaranKelasService;
 import com.monitoringanak.security.RoleValidator;
 import com.monitoringanak.model.Semester;
-import com.monitoringanak.model.PendaftaranKelas;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
