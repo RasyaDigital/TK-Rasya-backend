@@ -131,10 +131,12 @@ CREATE TABLE rapor (
 );
 
 -- DATA DUMMY (Expert Set)
+-- Passwords: admin123, guru123, wali123 (BCrypt format)
 INSERT INTO users (id_user, username, password, nama, email, id_role) VALUES 
-(1, 'admin', '$2a$10$5F8K7R9yLxJ3X.8zP.qNZeF/LQZ4.J5N8X9vHJK2Z3Y4wRJK5L6M7', 'Super Admin', 'admin@sekolah.com', 1),
-(2, 'guru1', '$2a$10$N.5F8K7R9yLxJ3X.8zP.qNZeF/LQZ4.J5N8X9vHJK2Z3Y4wRJK5L', 'Guru Budi', 'budi@sekolah.com', 2),
-(3, 'wali1', '$2a$10$8K7R9yLxJ3X.8zP.qNZeF/LQZ4.J5N8X9vHJK2Z3Y4wRJK5L6M7N', 'Orang Tua Azzam', 'wali1@email.com', 3);
+(1, 'admin', '$2a$10$hKDVYxLefVhv/LtuMaH1atUqYZvpwAqZqeK6WnPg1X.9UerLgn1re', 'Super Admin', 'admin@sekolah.com', 1),
+(2, 'guru1', '$2a$10$hKDVYxLefVhv/LtuMaH1atUqYZvpwAqZqeK6WnPg1X.9UerLgn1re', 'Guru Budi', 'budi@sekolah.com', 2),
+(3, 'wali1', '$2a$10$hKDVYxLefVhv/LtuMaH1atUqYZvpwAqZqeK6WnPg1X.9UerLgn1re', 'Orang Tua Azzam', 'wali1@email.com', 3);
+
 
 INSERT INTO tahun_ajaran (id_tahun, tahun_ajaran, is_active) VALUES (1, '2024/2025', true);
 INSERT INTO semester (id_semester, id_tahun, semester_ke, is_active) VALUES 

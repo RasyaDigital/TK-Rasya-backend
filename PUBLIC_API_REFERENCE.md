@@ -29,33 +29,37 @@ API menggunakan **JWT**. Login untuk mendapatkan token, lalu sertakan pada setia
 
 ### 2. Data Anak (`/anak`)
 - `GET /anak` : List anak (Filter otomatis per Wali).
-- `POST /anak` : Tambah anak.
+- `POST /anak` : Tambah anak (Data Master).
   ```json
   {
     "namaAnak": "Azzam",
     "tglLahir": "2019-01-15",
     "jenisKelamin": "L",
-    "kelas": "A",
-    "guru": {"idUser": 3},
-    "wali": {"idUser": 4}
+    "idWali": 4
   }
   ```
 
-### 1. Akademik (Master)
+### 3. Akademik & Pendaftaran (`/akademik`)
 - `GET /akademik/tahun-ajaran` : List semua tahun ajaran.
 - `GET /akademik/semester/aktif` : Mendapatkan semester yang sedang berjalan.
 - `POST /akademik/pendaftaran` : Daftarkan anak ke kelas & guru untuk semester ini.
+  ```json
+  {
+    "anak": {"idAnak": 1},
+    "semester": {"idSemester": 1},
+    "guru": {"idUser": 2},
+    "kelas": "A"
+  }
+  ```
 
-### 2. Penilaian Bulanan (Fisik & Aspek)
+### 4. Penilaian Bulanan (Fisik & Aspek)
 Endpoint menerima `idSemester` dan `bulan` (1-6).
-- `POST /perkembangan/fisik`
-- `POST /perkembangan/aspek`
 
-Contoh Body Penilaian Fisik:
+**Fisik (`/perkembangan/fisik`):**
 ```json
 {
-  "anak": {"idAnak": 1},
-  "semester": {"idSemester": 1},
+  "idAnak": 1,
+  "idSemester": 1,
   "bulan": 1,
   "tanggal": "2024-07-20",
   "tinggiBadan": 105.0,
@@ -63,34 +67,31 @@ Contoh Body Penilaian Fisik:
 }
 ```
 
-### 4. Penilaian Aspek (`/perkembangan/aspek`)
-- `POST /perkembangan/aspek` : Input nilai harian/bulanan.
-  ```json
-  {
-    "anak": {"idAnak": 1},
-    "tanggal": "2024-07-20",
-    "semester": 1,
-    "bulan": 1,
-    "agamaMoral": 80,
-    "fisikMotorik": 85,
-    "kognitif": 80,
-    "bahasa": 85,
-    "sosialEmosional": 80,
-    "seni": 85,
-    "catatan": "Baik"
-  }
-  ```
+**Aspek (`/perkembangan/aspek`):**
+```json
+{
+  "idAnak": 1,
+  "idSemester": 1,
+  "bulan": 1,
+  "tanggal": "2024-07-20",
+  "agamaMoral": 80,
+  "fisikMotorik": 85,
+  "kognitif": 80,
+  "bahasa": 85,
+  "sosialEmosional": 80,
+  "seni": 85
+}
+```
 
 ### 5. Laporan & Rapot (`/laporan`)
 - `POST /laporan` : Buat entri rapot.
   ```json
   {
-    "anak": {"idAnak": 1},
-    "semester": 1,
-    "tahunAjaran": "2024/2025",
-    "periode": "Semester 1",
+    "idAnak": 1,
+    "idSemester": 1,
+    "periode": "Semester 1 (Ganjil)",
     "filePdf": "laporan_azzam_s1.pdf",
-    "dibuatOleh": {"idUser": 3}
+    "idGuru": 3
   }
   ```
 
